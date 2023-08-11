@@ -16,5 +16,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial repo setup
 
 
-[0.0.1]: https://github.com/scanoss/scanoss.java/compare/v0.0.0...v0.0.1
+[0.0.1]: https://github.com/scanoss/vscode.extension/compare/v0.0.0...v0.0.1
 
