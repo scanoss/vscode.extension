@@ -1,9 +1,16 @@
 {
-  "name": "scanoss-vscode-plugin",
+  "name": "scanoss-extension-vscode",
   "publisher": "SCANOSS",
   "displayName": "SCANOSS",
-  "version": "1.0.0",
+  "description": "SCANOSS Visual Studio Code client integration",
+  "version": "0.8.0",
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [ "SCA", "Software Composition Analysis" ],
   "icon": "media/scanoss-icon.png",
+  "preview": true,
+  "author": {
+    "name": "SCANOSS"
+  },
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -77,5 +84,14 @@
   "dependencies": {
     "cosmiconfig": "^8.1.3",
     "scanoss": "^0.8.8"
-  }
+  },
+   "bugs": {
+    "url": "https://github.com/scanoss/vscode.extension/issues",
+    "email": "support@scanoss.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scanoss/vscode.extension.git"
+  },
+  "homepage": "https://scanoss.com"
 }
