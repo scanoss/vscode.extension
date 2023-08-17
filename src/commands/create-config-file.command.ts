@@ -3,7 +3,7 @@ import path from 'path';
 import * as vscode from 'vscode';
 import { doneButton, processingButton } from '../ui/main-button.status-bar';
 import { defaultConfig } from '../utils/config';
-import { showLog } from '../utils/logs';
+import { showErrorLog } from '../utils/logs';
 import { getRootProjectFolder } from '../utils/sdk';
 
 export const createConfigFile = vscode.commands.registerCommand(
@@ -25,7 +25,7 @@ export const createConfigFile = vscode.commands.registerCommand(
 
       doneButton('File created');
     } catch (error) {
-      showLog(`An error ocurred: ${error}`);
+      showErrorLog(`An error ocurred: ${error}`);
 
       doneButton('SCANOSS', 'error');
       const option = await vscode.window.showErrorMessage(

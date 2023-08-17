@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { DependencyScanner } from 'scanoss';
-import { showLog } from './logs';
+import { showErrorLog } from './logs';
 import { getRootProjectFolder } from './sdk';
 
 export const scanDependencies = async (allFiles: string[]) => {
@@ -28,7 +28,7 @@ export const scanDependencies = async (allFiles: string[]) => {
 
     return dependencies;
   } catch (error) {
-    showLog(`An error ocurred: ${error}`);
+    showErrorLog(`An error ocurred: ${error}`);
 
     throw new Error(`An error occurred while scanning the files., ${error}`);
   }

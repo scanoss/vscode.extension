@@ -3,8 +3,9 @@ import * as path from 'path';
 import { Scanner } from 'scanoss';
 import * as vscode from 'vscode';
 import { processingButton, doneButton } from '../ui/main-button.status-bar';
+import { checkRcConfigurationFile } from '../utils/config';
 import { scanDependencies } from '../utils/dependencyScanner';
-import { showLog } from '../utils/logs';
+import { showLog, showErrorLog } from '../utils/logs';
 import { checkIfSbomExists } from '../utils/sbom';
 import { collectFilePaths, getRootProjectFolder } from '../utils/sdk';
 import { generateSpdxLite, getPackage } from '../utils/spdx';
@@ -52,70 +53,80 @@ export const scanProjectCommand = vscode.commands.registerCommand(
           if (err) {
             doneButton();
             throw new Error(
-              `An error occurred while trying to read the temporary file`
+              'An error occurred while trying to read the temporary file'
             );
           }
 
           const dirname = `${rootFolder}/.scanoss`;
-
           if (!fs.existsSync(dirname)) {
             fs.mkdirSync(dirname, { recursive: true });
           }
 
-          fs.writeFileSync(path.join(dirname, 'sbom.temp.json'), data, 'utf-8');
-          doneButton();
-
-          const result = await checkIfSbomExists();
-
-          const optionSelected = await vscode.window.showInformationMessage(
-            result
-              ? 'Do you want to update your local sbom.json file with the scan results?'
-              : 'We have not detected a sbom.json file. Do you want to create it and add the scan results?',
-            ...[result ? 'Update' : 'Create and Update']
+          fs.writeFileSync(
+            path.join(dirname, 'scanoss-raw.json'),
+            data,
+            'utf-8'
           );
 
-          if (
-            optionSelected === 'Update' ||
-            optionSelected === 'Create and Update'
-          ) {
-            processingButton(
-              'Updating sbom.json file',
-              'ScanOSS is updating its sbom.json file with the analysis results'
+          const result = await checkIfSbomExists();
+          const { config } = await checkRcConfigurationFile();
+
+          if (config && config.produceOrUpdateSbom) {
+            const optionSelected = await vscode.window.showInformationMessage(
+              result
+                ? 'Do you want to update your local sbom.json file with the scan results?'
+                : 'We have not detected a sbom.json file. Do you want to create it and add the scan results?',
+              ...[result ? 'Update' : 'Create and Update'],
+              'Cancel'
             );
 
-            try {
-              const spdxData = await generateSpdxLite(JSON.parse(data));
-              spdxData.packages = spdxData.packages.concat(depPackages);
-              spdxData.documentDescribes =
-                spdxData.documentDescribes.concat(depDocumentDescribes);
-              const spdxDataJSON = JSON.stringify(spdxData, undefined, 4);
-              fs.writeFileSync(
-                path.join(rootFolder, 'sbom.json'),
-                spdxDataJSON,
-                'utf-8'
+            const spdxData = await generateSpdxLite(JSON.parse(data));
+            spdxData.packages = spdxData.packages.concat(depPackages);
+            spdxData.documentDescribes =
+              spdxData.documentDescribes.concat(depDocumentDescribes);
+            const spdxDataJSON = JSON.stringify(spdxData, undefined, 4);
+
+            if (
+              optionSelected === 'Update' ||
+              optionSelected === 'Create and Update'
+            ) {
+              processingButton(
+                'Updating sbom.json file',
+                'ScanOSS is updating its sbom.json file with the analysis results'
               );
 
-              vscode.window.showInformationMessage(
-                'Updated sbom.json file successfully.'
-              );
+              try {
+                fs.writeFileSync(
+                  path.join(rootFolder, 'sbom.json'),
+                  spdxDataJSON,
+                  'utf-8'
+                );
 
-              doneButton('File updated');
-            } catch (error) {
-              showLog(`An error ocurred: ${error}`);
-
-              doneButton('ScanOSS', 'error');
-              vscode.window.showErrorMessage(
-                'An error occurred while trying to update the sbom.json file'
-              );
-            } finally {
+                doneButton('File updated');
+                await vscode.window.showInformationMessage(
+                  'Updated sbom.json file successfully.'
+                );
+                showLog(spdxDataJSON);
+              } catch (error) {
+                showErrorLog(`An error occurred: ${error}`);
+                doneButton('ScanOSS', 'error');
+                vscode.window.showErrorMessage(
+                  'An error occurred while trying to update the sbom.json file'
+                );
+              }
+            } else if (optionSelected === 'Cancel') {
               doneButton();
             }
+          } else {
+            doneButton();
+            await vscode.window.showInformationMessage(
+              'Scan finished. You can find the results in the .scanoss folder.'
+            );
           }
         });
       }
     } catch (error) {
-      showLog(`An error ocurred: ${error}`);
-
+      showErrorLog(`An error occurred: ${error}`);
       doneButton('ScanOSS', 'error');
       const optionSelected = await vscode.window.showErrorMessage(
         'An error occurred while performing the scan.',
