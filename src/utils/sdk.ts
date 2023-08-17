@@ -3,7 +3,7 @@ import * as path from 'path';
 import { Scanner } from 'scanoss';
 import * as vscode from 'vscode';
 import { highlightLines } from '../ui/highlight.editor';
-import { showLog } from './logs';
+import { showErrorLog } from './logs';
 import { checkIfSbomExists } from './sbom';
 
 export const getRootProjectFolder = async () => {
@@ -47,7 +47,7 @@ export const scanFiles = async (
           fs.mkdirSync(dirname, { recursive: true });
         }
 
-        fs.writeFileSync(path.join(dirname, 'sbom.temp.json'), data, 'utf-8');
+        fs.writeFileSync(path.join(dirname, 'scanoss-raw.json'), data, 'utf-8');
 
         type ScanResult = {
           [scannedFilePath: string]: any[];
@@ -72,13 +72,13 @@ export const scanFiles = async (
           return { foundErrors: false, scanResults };
         }
       } catch (error: any) {
-        showLog(`An error ocurred: ${error}`);
+        showErrorLog(`An error ocurred: ${error}`);
 
         console.error(`Error reading scan result: ${error.message}`);
       }
     }
   } catch (error) {
-    showLog(`An error ocurred: ${error}`);
+    showErrorLog(`An error ocurred: ${error}`);
 
     throw new Error(`An error occurred while scanning the files.`);
   }
@@ -103,7 +103,7 @@ export const collectFilePaths = async (
 
     return filePaths;
   } catch (error) {
-    showLog(`An error ocurred: ${error}`);
+    showErrorLog(`An error ocurred: ${error}`);
 
     throw new Error(`An error occurred while collecting the file paths`);
   }

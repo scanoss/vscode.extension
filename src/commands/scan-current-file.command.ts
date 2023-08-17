@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { doneButton, processingButton } from '../ui/main-button.status-bar';
-import { showLog } from '../utils/logs';
+import { showLog, showErrorLog } from '../utils/logs';
 import { scanFiles } from '../utils/sdk';
 
 export const scanCurrentFileCommand = vscode.commands.registerCommand(
@@ -43,10 +43,8 @@ export const scanCurrentFileCommand = vscode.commands.registerCommand(
       } else {
         showLog(JSON.stringify(scanResults, null, 2));
       }
-
-      doneButton();
     } catch (error) {
-      showLog(`An error ocurred: ${error}`);
+      showErrorLog(`An error ocurred: ${error}`);
 
       doneButton('SCANOSS', 'error');
       const option = await vscode.window.showErrorMessage(

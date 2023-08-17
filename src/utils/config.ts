@@ -1,7 +1,7 @@
 import { cosmiconfig } from 'cosmiconfig';
 import * as vscode from 'vscode';
-import { doneButton, processingButton } from '../ui/main-button.status-bar';
-import { showLog } from './logs';
+import { doneButton } from '../ui/main-button.status-bar';
+import { showErrorLog } from './logs';
 import { checkIfSbomExists, createSbomFile, importSbomFile } from './sbom';
 import { getRootProjectFolder } from './sdk';
 import type { ScanOSSConfig } from '../types';
@@ -13,10 +13,10 @@ type CheckRcConfigurationFile = {
 
 export const defaultConfig: ScanOSSConfig = {
   scanOnSave: true,
+  produceOrUpdateSbom: false,
 };
 
 export async function checkRcConfigurationFile(): Promise<CheckRcConfigurationFile> {
-  processingButton('SCANOSS is initializing', 'SCANOSS is initializing');
   const rootFolder = await getRootProjectFolder();
   const explorer = cosmiconfig('scanoss');
   const results = await explorer.search(rootFolder);
@@ -87,6 +87,6 @@ export async function checkSbomFile() {
       selectOrImportSbomFile();
     }
   } catch (error) {
-    showLog(`An error ocurred: ${error}`);
+    showErrorLog(`An error ocurred: ${error}`);
   }
 }

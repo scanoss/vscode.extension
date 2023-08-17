@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { showLog } from './logs';
+import { showErrorLog } from './logs';
 import { getRootProjectFolder } from './sdk';
 
 export const checkIfSbomExists = async (): Promise<vscode.Uri | undefined> => {
@@ -29,7 +29,7 @@ export const createSbomFile = async () => {
       'The sbom.json file was created successfully'
     );
   } catch (error) {
-    showLog(`An error ocurred: ${error}`);
+    showErrorLog(`An error ocurred: ${error}`);
 
     vscode.window.showErrorMessage(
       `An error occurred while trying to create the sbom.json file.`
@@ -47,7 +47,7 @@ export const importSbomFile = async (file: vscode.Uri) => {
       'The sbom.json file was successfully imported into your project.'
     );
   } catch (error) {
-    showLog(`An error ocurred: ${error}`);
+    showErrorLog(`An error ocurred: ${error}`);
 
     vscode.window.showErrorMessage(
       `An error occurred while trying to import the sbom.json file.`
