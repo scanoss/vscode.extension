@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { highlightLines } from '../ui/highlight.editor';
 import { showErrorLog } from './logs';
 import { checkIfSbomExists } from './sbom';
+import { getScannerConfig } from './config';
 
 export const getRootProjectFolder = async () => {
   const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -21,7 +22,9 @@ export const scanFiles = async (
   highlightErrors = false
 ) => {
   try {
-    const scanner = new Scanner();
+    const scannerConfig = await getScannerConfig();
+    
+    const scanner = new Scanner(scannerConfig);
     const sbomFile = await checkIfSbomExists();
     const rootFolder = await getRootProjectFolder();
 
