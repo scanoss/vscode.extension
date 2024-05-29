@@ -34,4 +34,4 @@ You can configure the API connection parameters to use dedicated servers.
 To do this, set the following:
 
 - API URL: Setting the URL from Extensions Preferences (File -> Preferences -> Settings -> Extensions -> SCANOSS).
-- API KEY: Run the `SCANOSS: Set API Key` command from the Command Palette (View -> Command Palette)
+- API KEY: Run the `SCANOSS: Store API Key` command from the Command Palette (View -> Command Palette)

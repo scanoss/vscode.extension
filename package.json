@@ -3,7 +3,7 @@
   "publisher": "SCANOSS",
   "displayName": "SCANOSS",
   "description": "SCANOSS Visual Studio Code Client Integration",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "homepage": "https://scanoss.com",
   "license": "SEE LICENSE IN LICENSE",
   "keywords": [
@@ -52,7 +52,7 @@
           "order": 1
         },
         "SCANOSS.API_KEY": {
-          "markdownDescription": "SCANOSS API Key token (optional - not required for default OSSKB URL)\n\nTo set an API key, please run the following from the Command Palette (View -> Command Palette):\n\n```SCANOSS: Set API Key```\n\n",
+          "markdownDescription": "SCANOSS API Key token (optional - not required for default OSSKB URL)\n\nTo set an API key, please run the following from the Command Palette (View -> Command Palette):\n\n```SCANOSS: Store API Key```\n\nIMPORTANT: Do not update settings.json manually.",
           "order": 2
         }
       }
