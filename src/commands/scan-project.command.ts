@@ -3,7 +3,7 @@ import * as path from 'path';
 import { Scanner } from 'scanoss';
 import * as vscode from 'vscode';
 import { processingButton, doneButton } from '../ui/main-button.status-bar';
-import { checkRcConfigurationFile } from '../utils/config';
+import { checkRcConfigurationFile, getScannerConfig } from '../utils/config';
 import { scanDependencies } from '../utils/dependencyScanner';
 import { showLog, showErrorLog } from '../utils/logs';
 import { checkIfSbomExists } from '../utils/sbom';
@@ -19,7 +19,9 @@ export const scanProjectCommand = vscode.commands.registerCommand(
     );
 
     try {
-      const scanner = new Scanner();
+      const scannerConfig = await getScannerConfig();
+
+      const scanner = new Scanner(scannerConfig);
       const sbomFile = await checkIfSbomExists();
       const rootFolder = await getRootProjectFolder();
       const filePaths = await collectFilePaths(rootFolder);

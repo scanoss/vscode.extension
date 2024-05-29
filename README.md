@@ -14,6 +14,7 @@ You can use the following commands from the VScode command palette:
 | -------------------------- | ------------------------------------------------------------------- |
 | SCANOSS: Scan Project      | Performs a complete scan of the project files and proposes options. |
 | SCANOSS: Scan Current File | Scans the currently open file.                                      |
+| SCANOSS: Set API Key       | Set SCANOSS API Key token.                                          |
 
 The `.scanoss` directory will serve as the storage location for all files associated with the scanning process.
 
@@ -25,3 +26,12 @@ You can create a configuration file `.scanossrc` with the following options:
 | ------------------- | ------- | -------------------------------------------------------------------------------------------------------      |
 | scanOnSave          | true    | Every time you manually or automatically save a change to a file, a scan of the file will be performed.      |
 | produceOrUpdateSbom | false   | Following each scan, a prompt is activated, requesting the creation or updating of an SBOM file 'sbom.json'. |
+
+
+### API Configuration
+You can configure the API connection parameters to use dedicated servers.
+
+To do this, set the following:
+
+- API URL: Setting the URL from Extensions Preferences (File -> Preferences -> Settings -> Extensions -> SCANOSS).
+- API KEY: Run the `SCANOSS: Set API Key` command from the Command Palette (View -> Command Palette)

@@ -1,10 +1,13 @@
-import { cosmiconfig } from 'cosmiconfig';
 import * as vscode from 'vscode';
+import { cosmiconfig } from 'cosmiconfig';
+import { ScannerCfg } from 'scanoss';
+
 import { doneButton } from '../ui/main-button.status-bar';
 import { showErrorLog } from './logs';
 import { checkIfSbomExists, createSbomFile, importSbomFile } from './sbom';
 import { getRootProjectFolder } from './sdk';
 import type { ScanOSSConfig } from '../types';
+import { getContext } from './context';
 
 type CheckRcConfigurationFile = {
   isEmpty: boolean | undefined;
@@ -89,4 +92,21 @@ export async function checkSbomFile() {
   } catch (error) {
     showErrorLog(`An error ocurred: ${error}`);
   }
+}
+
+export const getScannerConfig = async (): Promise<ScannerCfg> => {
+  const scannerCfg = new ScannerCfg();
+  const extensionCfg = vscode.workspace.getConfiguration('SCANOSS');
+  const context = getContext();
+
+  if (extensionCfg.has('API_URL') && extensionCfg.API_URL.trim()) {
+    scannerCfg.API_URL = extensionCfg.API_URL;
+  }
+  
+  const API_KEY  = await context.secrets.get('API_KEY');
+  if (API_KEY) {
+    scannerCfg.API_KEY = API_KEY;
+  }
+
+  return scannerCfg;
 }

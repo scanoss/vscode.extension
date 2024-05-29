@@ -3,10 +3,13 @@
   "publisher": "SCANOSS",
   "displayName": "SCANOSS",
   "description": "SCANOSS Visual Studio Code Client Integration",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "https://scanoss.com",
   "license": "SEE LICENSE IN LICENSE",
-  "keywords": [ "SCA", "Software Composition Analysis" ],
+  "keywords": [
+    "SCA",
+    "Software Composition Analysis"
+  ],
   "icon": "media/scanoss-icon.png",
   "preview": false,
   "author": {
@@ -32,8 +35,28 @@
       {
         "command": "extension.scanProject",
         "title": "SCANOSS: Scan Project"
+      },
+      {
+        "command": "extension.storeApiKey",
+        "title": "SCANOSS: Store API Key"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "SCANOSS",
+      "properties": {
+        "SCANOSS.API_URL": {
+          "type": "string",
+          "title": "Title API Key vieja!",
+          "description": "SCANOSS API URL  (optional - default: https://api.osskb.org/scan/direct)",
+          "order": 1
+        },
+        "SCANOSS.API_KEY": {
+          "markdownDescription": "SCANOSS API Key token (optional - not required for default OSSKB URL)\n\nTo set an API key, please run the following from the Command Palette (View -> Command Palette):\n\n```SCANOSS: Set API Key```\n\n",
+          "order": 2
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run esbuild-base -- --minify",
@@ -84,7 +107,7 @@
   },
   "dependencies": {
     "cosmiconfig": "^8.1.3",
-    "scanoss": "^0.8.8"
+    "scanoss": "^0.13.0"
   },
   "bugs": {
     "url": "https://github.com/scanoss/vscode.extension/issues",
