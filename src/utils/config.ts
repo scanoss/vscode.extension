@@ -3,7 +3,7 @@ import { cosmiconfig } from 'cosmiconfig';
 import { ScannerCfg } from 'scanoss';
 
 import { doneButton } from '../ui/main-button.status-bar';
-import { showErrorLog } from './logs';
+import { showErrorLog, showLog } from './logs';
 import { checkIfSbomExists, createSbomFile, importSbomFile } from './sbom';
 import { getRootProjectFolder } from './sdk';
 import type { ScanOSSConfig } from '../types';
@@ -24,24 +24,21 @@ export async function checkRcConfigurationFile(): Promise<CheckRcConfigurationFi
   const explorer = cosmiconfig('scanoss');
   const results = await explorer.search(rootFolder);
 
+
   if (results?.isEmpty || results === null) {
-    doneButton();
     const option = await vscode.window.showInformationMessage(
       `We have not detected a .scanossrc file in your project. We can create one with the default configuration.`,
-      ...['Create']
+      ...['Create','Dismiss and Scan']
     );
 
     if (option === 'Create') {
       vscode.commands.executeCommand('extension.createConfigFile');
     }
   }
-
-  doneButton();
-
   return {
     isEmpty: results?.isEmpty,
     config:
-      results?.isEmpty || results?.isEmpty === null
+      results?.isEmpty || results === null
         ? defaultConfig
         : (results?.config as ScanOSSConfig),
   };
