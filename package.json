@@ -47,7 +47,7 @@
       "properties": {
         "SCANOSS.API_URL": {
           "type": "string",
-          "title": "Title API Key vieja!",
+          "title": "API URL",
           "description": "SCANOSS API URL  (optional - default: https://api.osskb.org/scan/direct)",
           "order": 1
         },
