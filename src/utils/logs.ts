@@ -7,7 +7,7 @@ export const showLog = (message: string) => {
   outputChannel.show();
   const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
   outputChannel.appendLine(
-    `---- ${new Date().toLocaleDateString()} ${currentTime} | SCANOSS scan requested ----`
+    `---- ${new Date().toLocaleDateString()} ${currentTime} | SCANOSS ----`
   );
 
   outputChannel.appendLine(message);

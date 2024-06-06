@@ -11,6 +11,7 @@ import { scanCurrentFileCommand } from './commands/scan-current-file.command';
 import { scanFileOnSaveCommand } from './commands/scan-file-on-save.command';
 import { scanProjectCommand } from './commands/scan-project.command';
 import { storeApiKeyCommand } from './commands/store-api-key.command';
+import { showLog } from './utils/logs';
 
 export const defaultConfig: ScanOSSConfig = {
   scanOnSave: true,
@@ -37,7 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
     if (config.scanOnSave) {
       if (
         vscode.window.activeTextEditor &&
-        document === vscode.window.activeTextEditor.document
+        document.fileName === vscode.window.activeTextEditor.document.fileName
       ) {
         scanFileOnSaveCommand(document);
       }
@@ -49,7 +50,12 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   vscode.workspace.onDidSaveTextDocument(async (document) => {
-    await checkConfigAndScan(document);
+      if (
+        vscode.window.activeTextEditor &&
+        document.fileName === vscode.window.activeTextEditor.document.fileName
+      ) {
+        await checkConfigAndScan(document);
+      }
   });
 
   context.subscriptions.push(

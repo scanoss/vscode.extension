@@ -13,12 +13,13 @@ import { generateSpdxLite, getPackage } from '../utils/spdx';
 export const scanProjectCommand = vscode.commands.registerCommand(
   'extension.scanProject',
   async () => {
+    const { config } = await checkRcConfigurationFile();
     processingButton(
       'Scanning project',
       'ScanOSS is scanning the entire project for matches'
     );
-
     try {
+  
       const scannerConfig = await getScannerConfig();
 
       const scanner = new Scanner(scannerConfig);
@@ -39,6 +40,9 @@ export const scanProjectCommand = vscode.commands.registerCommand(
         });
       });
 
+      showLog("Scan Initiated");
+      vscode.window.showInformationMessage('Repository level scan initiated');
+     
       const resultPath = await scanner.scan([
         sbomFile
           ? {
@@ -68,12 +72,12 @@ export const scanProjectCommand = vscode.commands.registerCommand(
             path.join(dirname, 'scanoss-raw.json'),
             data,
             'utf-8'
-          );
+          );        
 
           const result = await checkIfSbomExists();
-          const { config } = await checkRcConfigurationFile();
+        
 
-          if (config && config.produceOrUpdateSbom) {
+            if (config && config.produceOrUpdateSbom) {
             const optionSelected = await vscode.window.showInformationMessage(
               result
                 ? 'Do you want to update your local sbom.json file with the scan results?'
@@ -85,7 +89,7 @@ export const scanProjectCommand = vscode.commands.registerCommand(
             const spdxData = await generateSpdxLite(JSON.parse(data));
             spdxData.packages = spdxData.packages.concat(depPackages);
             spdxData.documentDescribes =
-              spdxData.documentDescribes.concat(depDocumentDescribes);
+            spdxData.documentDescribes.concat(depDocumentDescribes);
             const spdxDataJSON = JSON.stringify(spdxData, undefined, 4);
 
             if (
@@ -108,6 +112,7 @@ export const scanProjectCommand = vscode.commands.registerCommand(
                 await vscode.window.showInformationMessage(
                   'Updated sbom.json file successfully.'
                 );
+                showLog("Updated sbom.json file");
                 showLog(spdxDataJSON);
               } catch (error) {
                 showErrorLog(`An error occurred: ${error}`);
@@ -119,14 +124,16 @@ export const scanProjectCommand = vscode.commands.registerCommand(
             } else if (optionSelected === 'Cancel') {
               doneButton();
             }
-          } else {
-            doneButton();
-            await vscode.window.showInformationMessage(
-              'Scan finished. You can find the results in the .scanoss folder.'
-            );
-          }
+            } else {         
+              showLog("Scan Completed. You can find detailed results in the .scanoss folder.");
+              vscode.window.showInformationMessage(
+                'Scan finished. You can find the results in the .scanoss folder.'
+              );
+              doneButton();
+            }
         });
       }
+     
     } catch (error) {
       showErrorLog(`An error occurred: ${error}`);
       doneButton('ScanOSS', 'error');
